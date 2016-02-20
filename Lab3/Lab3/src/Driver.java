@@ -17,7 +17,7 @@ public class Driver {
 
     //Edit these fields to taylor the driver.
     private static final String TITLE = "Lab 3: Worm Simulator";
-    private static final ImageIcon ICON = new ImageIcon("icon.jpg");
+    private static final ImageIcon ICON = new ImageIcon("images/icon.jpg");
     
     //Do not modify the code below unless you do not want to include something. 
     //In which case, you need to comment out.
