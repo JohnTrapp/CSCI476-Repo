@@ -17,16 +17,19 @@ public class Driver {
 
     //Edit these fields to taylor the driver.
     private static final String TITLE = "Lab 3: Worm Simulator";
+    private static final ImageIcon ICON = new ImageIcon("icon.jpg");
     
     //Do not modify the code below unless you do not want to include something. 
     //In which case, you need to comment out.
     public static void main(String[] args) {
+        JFrame.setDefaultLookAndFeelDecorated(false);
         JFrame frame = new JFrame(TITLE);
-        frame.setLocation(200, 200);
-        frame.setSize(1000, 1000);
+        //frame.setLocation(200, 200);
+        //frame.setSize(1000, 1000);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setIconImage(ICON.getImage());
         frame.setContentPane(new Lab3Panel());
         frame.setVisible(true);
-        //frame.pack();
+        frame.pack();
     }
 }
