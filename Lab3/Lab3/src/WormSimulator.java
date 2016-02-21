@@ -14,17 +14,21 @@ class WormSimulator {
 
     private int n, d;
     private double p;
+    public Computer[] board;
 
     //Not actually used, but added just in case
     public WormSimulator() {
     }
 
     //Main constructor used
-    public WormSimulator(int nIn, int dIn, double pIn) {
+    public WormSimulator(int nIn, int dIn, double pIn, Computer[] boardIn) {
         //Note that constructor will take in whatever is used to display the worms
         n = nIn;
         d = dIn;
         p = pIn;
+        board = boardIn;
+        
+        board[2].infect();
     }
 
     //Waits for external okay to start, just to be safe

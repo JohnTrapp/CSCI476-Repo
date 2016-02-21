@@ -5,10 +5,12 @@
  */
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.PopupMenu;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -24,6 +26,7 @@ import javax.swing.event.ChangeListener;
 class Lab3Panel extends JPanel {
 
     private WormSimulator wormSimulator;
+    public Computer[] board;  //Public because fuck that
 
     private int n, d;
     private double p;
@@ -37,7 +40,7 @@ class Lab3Panel extends JPanel {
 
         //add(Box.createRigidArea(new Dimension(0, 10)));
         add(createControlPanel());
-        //add(Box.createRigidArea(new Dimension(0, 10)));
+        add(Box.createRigidArea(new Dimension(0, 10)));
         add(createDisplayPanel());
     }
 
@@ -121,9 +124,18 @@ class Lab3Panel extends JPanel {
     }
 
     private JPanel createDisplayPanel() {
-
         JPanel display = new JPanel();
-        //add in the items
+        display.setLayout(new GridLayout(32, 32));
+
+        board = new Computer[1000];
+        for (int i = 0; i < board.length; i++) {
+            board[i] = new Computer();
+            display.add(board[i]);
+        }
+
+        display.setBorder(BorderFactory.createTitledBorder("Computers"));
+        display.validate();
+        display.setPreferredSize(display.getPreferredSize());
         return display;
     }
 
@@ -131,7 +143,8 @@ class Lab3Panel extends JPanel {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            wormSimulator = new WormSimulator(n, d, p);
+
+            wormSimulator = new WormSimulator(n, d, p, board);
             nChooser.setEnabled(false);
             dChooser.setEnabled(false);
             pChooser.setEnabled(false);
