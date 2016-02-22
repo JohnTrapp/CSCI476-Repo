@@ -1,35 +1,82 @@
+/*
+ * This code is written by John Trapp and Brendan Bellows
+ * for the express purpose to be used in CSCI476 at Montana State University
+ * Spring 2016. Please do not use elsewhere.
+ */
 
 import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 /**
  *
- * @author John
+ * @author John Trapp
  */
 public class Computer extends JButton {
 
     private boolean vulnerable;
-    private int infected = 0;
+    private int infected = 0, id;
 
-    public Computer() {
+    public Computer(int idIn) {
         super();
         infected = 0;
+        id = idIn;
         super.setText("" + infected);
         super.setBackground(Color.WHITE);
+        super.addActionListener(new ListenerOMatic());
     }
 
     public void infect() {
-        infected++;
-        super.setText("" + infected);
-        if (infected == 1) {
-            super.setBackground(Color.ORANGE);
+        if (vulnerable) {
+            infected++;
+            super.setText("" + infected);
+            if (infected == 1) {
+                super.setBackground(Color.ORANGE);
+            } else if (infected < 100) {
+                super.setBackground(Color.RED);
+            } else if (infected >= 100) {
+                super.setBackground(Color.MAGENTA);
+            }
+        }
+    }
+
+    public void setVulnerable(boolean input) {
+        if (input) {  //If setting as vulnerable
+            vulnerable = true;
+            super.setBackground(Color.BLACK);  //Make it black
+        } else {  //If removing vulnerablility (a feature probably not needed)
+            vulnerable = false;
+            infected--;
+            infect();  //Best way to recolor it without redoing the whole infect class
+        }
+    }
+
+    public int getInfected() {
+        return infected;
+    }
+
+    public String prettyPrint() {
+        String result = "";
+        if (infected < 100) {
+            result = "Computer Number: " + id
+                    + "\nComputer Vulnerability: " + vulnerable
+                    + "\nThis computer has been infected " + infected + " times.";
         } else {
-            super.setBackground(Color.RED);
+            result = "Computer Number: " + id
+                    + "\nComputer Vulnerability: " + vulnerable
+                    + "\nThis computer has been infected " + infected + " times."
+                    + "\nTHIS COMPUTER HAS BEEN OVERLOADED!!";
+        }
+        return result;
+    }
+
+    private class ListenerOMatic implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JOptionPane.showMessageDialog(null, "" + prettyPrint());
         }
     }
 }

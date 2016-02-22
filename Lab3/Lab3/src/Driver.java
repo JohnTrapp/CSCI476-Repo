@@ -20,7 +20,7 @@ public class Driver {
     private static final ImageIcon ICON = new ImageIcon("images/icon.jpg");
     
     //Do not modify the code below unless you do not want to include something. 
-    //In which case, you need to comment out.
+    //In which case, you need to comment it out.
     public static void main(String[] args) {
         JFrame.setDefaultLookAndFeelDecorated(false);
         JFrame frame = new JFrame(TITLE);

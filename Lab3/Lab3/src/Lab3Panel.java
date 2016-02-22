@@ -34,6 +34,7 @@ class Lab3Panel extends JPanel {
     private JButton startButton;
     private JSlider nChooser, dChooser, pChooser;
     private JLabel nLabel, dLabel, pLabel;
+    private JTextArea stats1Label, stats2Label;
 
     public Lab3Panel() {
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
@@ -49,6 +50,34 @@ class Lab3Panel extends JPanel {
         startButton.setMnemonic(KeyEvent.VK_S);
         startButton.addActionListener(new startListener());
 
+        ////////////////////////////////////////////////////////////////////////
+        //Stats 1 area
+        stats1Label = new JTextArea("Infected: 0" + "/" + n
+                + "\nOverloaded: 0" + "/" + n
+                + "\nNumber of reinfections: 0");
+        stats1Label.setEditable(false);
+        stats1Label.setColumns(28);
+        stats1Label.setRows(3);
+
+        JPanel stats1 = new JPanel();
+        stats1.setBorder(BorderFactory.createTitledBorder("Stats"));
+        stats1.add(stats1Label);
+        stats1.validate();
+        stats1.setPreferredSize(stats1.getPreferredSize());
+        ////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////
+        //Stats 2 area
+        stats2Label = new JTextArea("Please start the simulation to view results.");
+        stats2Label.setEditable(false);
+        stats2Label.setColumns(28);
+        stats2Label.setRows(3);
+
+        JPanel stats2 = new JPanel();
+        stats2.setBorder(BorderFactory.createTitledBorder("Lab Checker"));
+        stats2.add(stats2Label);
+        stats2.validate();
+        stats2.setPreferredSize(stats2.getPreferredSize());
+        ////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////
         //N area
         nChooser = new JSlider(0, 999, 500);
@@ -105,21 +134,31 @@ class Lab3Panel extends JPanel {
         c.gridx = 0;
         c.gridy = 0;
         c.gridwidth = 2;
+        c.gridheight = 3;
+        controls.add(stats1, c);
+
+        c.gridx = 8;
+        controls.add(stats2, c);
+
+        c.gridx = 2;
+        c.gridy = 0;
+        c.gridwidth = 2;
         c.gridheight = 2;
         c.fill = GridBagConstraints.BOTH;
         controls.add(nArea, c);
 
-        c.gridx = 2;
+        c.gridx = 4;
         controls.add(dArea, c);
 
-        c.gridx = 4;
+        c.gridx = 6;
         controls.add(pArea, c);
 
-        c.gridx = 0;
+        c.gridx = 2;
         c.gridy = 2;
         c.gridheight = 1;
         c.gridwidth = 6;
         controls.add(startButton, c);
+
         return controls;
     }
 
@@ -129,7 +168,7 @@ class Lab3Panel extends JPanel {
 
         board = new Computer[1000];
         for (int i = 0; i < board.length; i++) {
-            board[i] = new Computer();
+            board[i] = new Computer(i);
             display.add(board[i]);
         }
 
@@ -144,11 +183,16 @@ class Lab3Panel extends JPanel {
         @Override
         public void actionPerformed(ActionEvent e) {
 
-            wormSimulator = new WormSimulator(n, d, p, board);
             nChooser.setEnabled(false);
             dChooser.setEnabled(false);
             pChooser.setEnabled(false);
             startButton.setEnabled(false);
+
+            wormSimulator = new WormSimulator(nChooser.getValue(), dChooser.getValue(),
+                    ((double) (pChooser.getValue())) / 10, board);
+            wormSimulator.startSimulation();
+            stats1Label.setText(wormSimulator.stats1Return());
+            stats2Label.setText(wormSimulator.stats2Return());
         }
     }
 
