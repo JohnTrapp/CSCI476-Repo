@@ -26,17 +26,17 @@ class WormSimulator {
         d = dIn;
         p = pIn;
         board = boardIn;
-
-        board[2].setVulnerable(true);
-        for (int i = 0; i < 101; i++) {
-            board[2].infect();
-        }
     }
 
     //Waits for external okay to start, just to be safe
     public void startSimulation() {
         makeVulnerable();  //INCREASE!!
         infection();  //INFECT!!
+        
+        board[2].setVulnerable(true);
+        for (int i = 0; i < 101; i++) {
+            board[2].infect();
+        }
 
     }
 

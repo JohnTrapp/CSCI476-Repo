@@ -56,8 +56,8 @@ class Lab3Panel extends JPanel {
                 + "\nOverloaded: 0" + "/" + n
                 + "\nNumber of reinfections: 0");
         stats1Label.setEditable(false);
-        stats1Label.setColumns(28);
-        stats1Label.setRows(3);
+        //stats1Label.setColumns(28);
+        //stats1Label.setRows(3);
 
         JPanel stats1 = new JPanel();
         stats1.setBorder(BorderFactory.createTitledBorder("Stats"));
@@ -69,8 +69,8 @@ class Lab3Panel extends JPanel {
         //Stats 2 area
         stats2Label = new JTextArea("Please start the simulation to view results.");
         stats2Label.setEditable(false);
-        stats2Label.setColumns(28);
-        stats2Label.setRows(3);
+        //stats2Label.setColumns(28);
+        //stats2Label.setRows(3);
 
         JPanel stats2 = new JPanel();
         stats2.setBorder(BorderFactory.createTitledBorder("Lab Checker"));
