@@ -30,6 +30,7 @@ public class Driver {
         frame.setIconImage(ICON.getImage());
         frame.setContentPane(new Lab3Panel());
         frame.setVisible(true);
-        frame.pack();
+        frame.setExtendedState(frame.getExtendedState() | JFrame.MAXIMIZED_BOTH);
+        //frame.pack();
     }
 }

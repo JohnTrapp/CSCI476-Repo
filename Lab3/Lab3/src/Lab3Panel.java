@@ -37,12 +37,12 @@ class Lab3Panel extends JPanel {
     private JTextArea stats1Label, stats2Label;
 
     public Lab3Panel() {
-        setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
+        //setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 
         //add(Box.createRigidArea(new Dimension(0, 10)));
-        add(createControlPanel());
-        add(Box.createRigidArea(new Dimension(0, 10)));
-        add(createDisplayPanel());
+        add(createControlPanel(), BorderLayout.PAGE_START);
+        //add(Box.createRigidArea(new Dimension(0, 10)));
+        add(createDisplayPanel(), BorderLayout.CENTER);
     }
 
     private JPanel createControlPanel() {
@@ -175,6 +175,7 @@ class Lab3Panel extends JPanel {
         display.setBorder(BorderFactory.createTitledBorder("Computers"));
         display.validate();
         display.setPreferredSize(display.getPreferredSize());
+
         return display;
     }
 
