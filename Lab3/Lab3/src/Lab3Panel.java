@@ -42,7 +42,11 @@ class Lab3Panel extends JPanel {
         //add(Box.createRigidArea(new Dimension(0, 10)));
         add(createControlPanel(), BorderLayout.PAGE_START);
         //add(Box.createRigidArea(new Dimension(0, 10)));
-        add(createDisplayPanel(), BorderLayout.CENTER);
+        JPanel display = createDisplayPanel();
+        JScrollPane scrollDisplay = new JScrollPane(display);
+        scrollDisplay.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollDisplay.setPreferredSize(new Dimension(1100, 600));
+        add(scrollDisplay, BorderLayout.CENTER);
     }
 
     private JPanel createControlPanel() {
@@ -54,7 +58,7 @@ class Lab3Panel extends JPanel {
         //Stats 1 area
         stats1Label = new JTextArea("Infected: 0" + "/" + n
                 + "\nOverloaded: 0" + "/" + n
-                + "\nNumber of reinfections: 0");
+                + "\nNumber of reinfections: 0             ");
         stats1Label.setEditable(false);
         //stats1Label.setColumns(28);
         //stats1Label.setRows(3);
@@ -80,12 +84,12 @@ class Lab3Panel extends JPanel {
         ////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////
         //N area
-        nChooser = new JSlider(0, 999, 500);
+        nChooser = new JSlider(0, 9999, 5000);
         nChooser.setMajorTickSpacing(100);
         nChooser.setPaintTicks(true);
         nChooser.addChangeListener(new nListener());
 
-        nLabel = new JLabel("500");
+        nLabel = new JLabel("5000");
 
         JPanel nArea = new JPanel();
         nArea.add(nLabel);
@@ -96,12 +100,12 @@ class Lab3Panel extends JPanel {
         ////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////
         //D area
-        dChooser = new JSlider(0, 999, 500);
+        dChooser = new JSlider(0, 9999, 5000);
         dChooser.setMajorTickSpacing(100);
         dChooser.setPaintTicks(true);
         dChooser.addChangeListener(new dListener());
 
-        dLabel = new JLabel("500");
+        dLabel = new JLabel("5000");
 
         JPanel dArea = new JPanel();
         dArea.add(dLabel);
@@ -164,18 +168,21 @@ class Lab3Panel extends JPanel {
 
     private JPanel createDisplayPanel() {
         JPanel display = new JPanel();
-        display.setLayout(new GridLayout(32, 32));
+        display.setLayout(new GridLayout(400, 25));
 
-        board = new Computer[1000];
+        board = new Computer[10000];
         for (int i = 0; i < board.length; i++) {
             board[i] = new Computer(i);
             display.add(board[i]);
         }
 
-        display.setBorder(BorderFactory.createTitledBorder("Computers"));
         display.validate();
-        display.setPreferredSize(display.getPreferredSize());
-
+        //Dimension dimension = display.getPreferredSize();
+        //int width = (getWidth()) - 20;
+        //int height = dimension.height;
+        //dimension.setSize(width, height);
+        //display.setBorder(BorderFactory.createTitledBorder("Computers"));
+        //display.setPreferredSize(dimension);
         return display;
     }
 
@@ -193,12 +200,11 @@ class Lab3Panel extends JPanel {
                     ((double) (pChooser.getValue())) / 10, board);
             wormSimulator.startSimulation();
             //run ten steps of the simulator
-            for(int i = 0; i < 10; i++){
+            for (int i = 0; i < 10; i++) {
                 wormSimulator.spread();
-                stats1Label.setText(wormSimulator.stats1Return());
-                stats2Label.setText(wormSimulator.stats2Return());
             }
-            
+            stats1Label.setText(wormSimulator.stats1Return());
+            stats2Label.setText(wormSimulator.stats2Return());
         }
     }
 
