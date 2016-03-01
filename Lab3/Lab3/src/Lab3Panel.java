@@ -192,8 +192,13 @@ class Lab3Panel extends JPanel {
             wormSimulator = new WormSimulator(nChooser.getValue(), dChooser.getValue(),
                     ((double) (pChooser.getValue())) / 10, board);
             wormSimulator.startSimulation();
-            stats1Label.setText(wormSimulator.stats1Return());
-            stats2Label.setText(wormSimulator.stats2Return());
+            //run ten steps of the simulator
+            for(int i = 0; i < 10; i++){
+                wormSimulator.spread();
+                stats1Label.setText(wormSimulator.stats1Return());
+                stats2Label.setText(wormSimulator.stats2Return());
+            }
+            
         }
     }
 
