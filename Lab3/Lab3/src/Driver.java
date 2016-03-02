@@ -5,13 +5,11 @@
  */
 
 import javax.swing.JFrame;
-import java.awt.Image;
-import java.awt.*;
 import javax.swing.*;
 
 /**
  *
- * @author john.trapp
+ * @author John Trapp
  */
 public class Driver {
 
@@ -19,18 +17,16 @@ public class Driver {
     private static final String TITLE = "Lab 3: Worm Simulator";
     private static final ImageIcon ICON = new ImageIcon("images/icon.jpg");
     
-    //Do not modify the code below unless you do not want to include something. 
-    //In which case, you need to comment it out.
     public static void main(String[] args) {
         JFrame.setDefaultLookAndFeelDecorated(false);
         JFrame frame = new JFrame(TITLE);
-        //frame.setLocation(200, 200);
-        //frame.setSize(1000, 1000);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setIconImage(ICON.getImage());
+        frame.setSize(1300,850);
+        frame.setExtendedState(frame.getExtendedState() | JFrame.MAXIMIZED_BOTH);
         frame.setContentPane(new Lab3Panel());
         frame.setVisible(true);
-        frame.setExtendedState(frame.getExtendedState() | JFrame.MAXIMIZED_BOTH);
+        
         //frame.pack();
     }
 }

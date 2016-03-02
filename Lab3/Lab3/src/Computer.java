@@ -15,11 +15,12 @@ import javax.swing.JOptionPane;
  * @author John Trapp
  */
 public class Computer extends JButton {
+    //A class that extends JButton to move the individual logic to a neater place.
 
     private boolean vulnerable;
     private int infected = 0, id;
 
-    public Computer(int idIn) {
+    public Computer(int idIn) {  //Constructor
         super();
         infected = 0;
         id = idIn;
@@ -28,15 +29,15 @@ public class Computer extends JButton {
         super.addActionListener(new ListenerOMatic());
     }
 
-    public void infect() {
+    public void infect() {  //Checks if it is vulnerable or not
         if (vulnerable) {
             infected++;
             super.setText("" + infected);
-            if (infected == 1) {
+            if (infected == 1) {                    //Normally infected
                 super.setBackground(Color.ORANGE);
-            } else if (infected < 100) {
+            } else if (infected < 100) {            //Reinfected
                 super.setBackground(Color.RED);
-            } else if (infected >= 100) {
+            } else if (infected >= 100) {           //Overloaded
                 super.setBackground(Color.MAGENTA);
             }
         }

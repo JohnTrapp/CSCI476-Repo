@@ -4,14 +4,12 @@
  * Spring 2016. Please do not use elsewhere.
  */
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Container;
+import java.awt.BorderLayout;  //Look at all of these imports!
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
-import java.awt.PopupMenu;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -26,30 +24,27 @@ import javax.swing.event.ChangeListener;
 class Lab3Panel extends JPanel {
 
     private WormSimulator wormSimulator;
-    public Computer[] board;  //Public because fuck that
+    public Computer[] board;  //The array of computers
 
     private int n, d;
     private double p;
 
-    private JButton startButton;
+    private JButton startButton;  //GIU Things
     private JSlider nChooser, dChooser, pChooser;
     private JLabel nLabel, dLabel, pLabel;
     private JTextArea stats1Label, stats2Label;
 
     public Lab3Panel() {
-        //setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
+        add(createControlPanel(), BorderLayout.PAGE_START);  //Put the controls at the top
 
-        //add(Box.createRigidArea(new Dimension(0, 10)));
-        add(createControlPanel(), BorderLayout.PAGE_START);
-        //add(Box.createRigidArea(new Dimension(0, 10)));
-        JPanel display = createDisplayPanel();
+        JPanel display = createDisplayPanel();  //Create the buttons and put them in a scroll pane
         JScrollPane scrollDisplay = new JScrollPane(display);
         scrollDisplay.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        scrollDisplay.setPreferredSize(new Dimension(1100, 600));
+        scrollDisplay.setPreferredSize(new Dimension(1100, 700));
         add(scrollDisplay, BorderLayout.CENTER);
     }
 
-    private JPanel createControlPanel() {
+    private JPanel createControlPanel() {  //This area is a hot mess of GUI things.
         startButton = new JButton("Start");
         startButton.setMnemonic(KeyEvent.VK_S);
         startButton.addActionListener(new startListener());
@@ -60,8 +55,6 @@ class Lab3Panel extends JPanel {
                 + "\nOverloaded: 0" + "/" + n
                 + "\nNumber of reinfections: 0             ");
         stats1Label.setEditable(false);
-        //stats1Label.setColumns(28);
-        //stats1Label.setRows(3);
 
         JPanel stats1 = new JPanel();
         stats1.setBorder(BorderFactory.createTitledBorder("Stats"));
@@ -73,8 +66,6 @@ class Lab3Panel extends JPanel {
         //Stats 2 area
         stats2Label = new JTextArea("Please start the simulation to view results.");
         stats2Label.setEditable(false);
-        //stats2Label.setColumns(28);
-        //stats2Label.setRows(3);
 
         JPanel stats2 = new JPanel();
         stats2.setBorder(BorderFactory.createTitledBorder("Lab Checker"));
@@ -166,7 +157,7 @@ class Lab3Panel extends JPanel {
         return controls;
     }
 
-    private JPanel createDisplayPanel() {
+    private JPanel createDisplayPanel() {  //Creates the array of computers
         JPanel display = new JPanel();
         display.setLayout(new GridLayout(400, 25));
 
@@ -177,21 +168,16 @@ class Lab3Panel extends JPanel {
         }
 
         display.validate();
-        //Dimension dimension = display.getPreferredSize();
-        //int width = (getWidth()) - 20;
-        //int height = dimension.height;
-        //dimension.setSize(width, height);
-        //display.setBorder(BorderFactory.createTitledBorder("Computers"));
-        //display.setPreferredSize(dimension);
         return display;
     }
 
     private class startListener implements ActionListener {
 
         @Override
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(ActionEvent e) {  //Starts the simulation off
+            setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));  //That's good HCI right here
 
-            nChooser.setEnabled(false);
+            nChooser.setEnabled(false);  //So you can't go about breaking things
             dChooser.setEnabled(false);
             pChooser.setEnabled(false);
             startButton.setEnabled(false);
@@ -203,11 +189,14 @@ class Lab3Panel extends JPanel {
             for (int i = 0; i < 10; i++) {
                 wormSimulator.spread();
             }
-            stats1Label.setText(wormSimulator.stats1Return());
+            stats1Label.setText(wormSimulator.stats1Return());  //Reports stats
             stats2Label.setText(wormSimulator.stats2Return());
+
+            setCursor(Cursor.getDefaultCursor());  //Hey! Heavy computation done!
         }
     }
 
+    //Listeners to make the buttons actually do things
     private class nListener implements ChangeListener {
 
         @Override
