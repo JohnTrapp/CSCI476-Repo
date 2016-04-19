@@ -5,10 +5,27 @@
  */
 package config;
 
-/**
- *
- * @author Brendan
- */
+import java.util.ArrayList;
+
+
 public class SubPolicy {
+    private String direction;
+    private String regexp;
+    private ArrayList<String> flags;
+    
+    public SubPolicy(){
+    }
+
+    public void setDirection(String direction) {
+        this.direction = direction;
+    }
+
+    public void setRegexp(String regexp) {
+        this.regexp = regexp;
+    }
+
+    public void setFlags(ArrayList<String> flags) {
+        this.flags = flags;
+    }
     
 }
