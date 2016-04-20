@@ -11,6 +11,7 @@ import org.jnetpcap.Pcap;
 import org.jnetpcap.packet.Payload;
 import org.jnetpcap.packet.PcapPacket;
 import org.jnetpcap.packet.PcapPacketHandler;
+import org.jnetpcap.packet.format.FormatUtils;
 import org.jnetpcap.protocol.network.Ip4;
 import org.jnetpcap.protocol.tcpip.Tcp;
 import org.jnetpcap.protocol.tcpip.Udp;
@@ -38,12 +39,12 @@ public class ids {
     public static String hostIp;
 
     public static void main(String[] args) throws IOException {
-        if(args.length != 2){
-         System.err.println("Incorrect amount of arguments used. "
-         + "Please correct and try again."
-         + "\nCorrect Usage: (policy file) (pcap file)");
-         System.exit(0);
-         }
+        if (args.length != 2) {
+            System.err.println("Incorrect amount of arguments used. "
+                    + "Please correct and try again."
+                    + "\nCorrect Usage: (policy file) (pcap file)");
+            System.exit(0);
+        }
         isInputCorrect(args);
 
         config.ConfigParser parser = new config.ConfigParser(args[0]);
@@ -95,11 +96,11 @@ public class ids {
                 boolean fromhostFlag = false;
                 boolean tohostFlag = false;
 
-                String sourceIp, destinationIp, payload;
+                String sourceIp = "", destinationIp = "", payloadIn = "";
                 int sourcePort = 0, destinationPort = 0;
                 if (packet.hasHeader(ip)) {
-                    sourceIp = Arrays.toString(packet.getHeader(ip).source());
-                    destinationIp = Arrays.toString(packet.getHeader(ip).destination());
+                    sourceIp = FormatUtils.ip(packet.getHeader(ip).source());
+                    destinationIp = FormatUtils.ip(packet.getHeader(ip).destination());
                     if (sourceIp.equals(hostIp)) {
                         fromhostFlag = true;
                     }
@@ -117,19 +118,50 @@ public class ids {
                     destinationPort = (packet.getHeader(udp).destination());
                 }
 
-                payload = new String(packet.getHeader(ip).getPayload());
+                payloadIn = new String(packet.getHeader(ip).getPayload());
 
                 for (ScanPolicy host_port1 : host_port) {
                     if (Integer.parseInt(host_port1.getRule()) == destinationPort) {
                         ArrayList<SubPolicy> temp = host_port1.getPolicy().getSubPolicies();
                         for (SubPolicy temp1 : temp) {
-                            if (temp1.matchRule(payload)) {
+                            /*if(payload.contains("Now I own your computer"))
+                             System.out.println("Rude payload!");*/
+                            if (temp1.matchRule(payloadIn)) {
                                 System.out.println("\tRule: " + host_port1.getPolicy().getName());
                             }
                         }
                     }
                 }
-                
+                for (ScanPolicy attacker_port1 : attacker_port) {
+                    if (Integer.parseInt(attacker_port1.getRule()) == sourcePort) {
+                        ArrayList<SubPolicy> temp = attacker_port1.getPolicy().getSubPolicies();
+                        for (SubPolicy temp1 : temp) {
+                            if (temp1.matchRule(payloadIn)) {
+                                System.out.println("\tRule: " + attacker_port1.getPolicy().getName());
+                            }
+                        }
+                    }
+                }
+                for (ScanPolicy attacker1 : attacker) {
+                    if (attacker1.getRule().equals(sourceIp)) {
+                        ArrayList<SubPolicy> temp = attacker1.getPolicy().getSubPolicies();
+                        for (SubPolicy temp1 : temp) {
+                            if (temp1.matchRule(payloadIn)) {
+                                System.out.println("\tRule: " + attacker1.getPolicy().getName());
+                            }
+                        }
+                    }
+                }
+                for (ScanPolicy payload1 : payload) {
+                    if (payload1.getRule().equals(payloadIn)) {
+                        ArrayList<SubPolicy> temp = payload1.getPolicy().getSubPolicies();
+                        for (SubPolicy temp1 : temp) {
+                            if (temp1.matchRule(payloadIn)) {
+                                System.out.println("\tRule: " + payload1.getPolicy().getName());
+                            }
+                        }
+                    }
+                }
             }
         };
 
