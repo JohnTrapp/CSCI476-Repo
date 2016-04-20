@@ -81,4 +81,7 @@ public class Policy {
     public ArrayList getSubPolicies(){
         return this.subPolicies;
     }
+    public String getName(){
+        return this.name;
+    }
 }
