@@ -1,8 +1,11 @@
 
+import com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type;
+import config.Policy;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import org.jnetpcap.Pcap;
 import org.jnetpcap.packet.PcapPacket;
 import org.jnetpcap.packet.PcapPacketHandler;
@@ -23,6 +26,13 @@ public class ids {
      * @param args the command line arguments
      * @throws java.io.IOException
      */
+    
+    public static ArrayList<ScanPolicy> host_port;
+    public static ArrayList<ScanPolicy> attacker_port;
+    public static ArrayList<ScanPolicy> attacker;
+    public static ArrayList<ScanPolicy> payload;
+    
+    
     public static void main(String[] args) throws IOException {
         /*if(args.length != 2){
          System.err.println("Incorrect amount of arguments used. "
@@ -36,12 +46,24 @@ public class ids {
         parser.parseThisShit();
         //arraylist policys = parse(args[0]);
 
-        createPolicies();
+        createPolicies(parser.getPolicies());
         scan(args[1]);
     }
 
-    private static void createPolicies() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private static void createPolicies(ArrayList<Policy> inPolicies) {
+        Policy curPol;
+        for(int i = 0; i < inPolicies.size(); i++){
+            curPol = inPolicies.get(i);
+            if(!curPol.getHostPort().equals("any")){
+                host_port.add(new ScanPolicy(curPol.getHostPort(), curPol));
+            } else if (!curPol.getAttacker().equals("any")){
+                attacker.add(new ScanPolicy(curPol.getAttacker(), curPol));
+            } else if (!curPol.getAttackerPort().equals("any")){
+                attacker_port.add(new ScanPolicy(curPol.getAttackerPort(), curPol));
+            } else {
+                payload.add(new ScanPolicy("regexp", curPol));
+            }
+        }
     }
 
     private static void scan(String fileIn) {
@@ -85,6 +107,25 @@ public class ids {
                 System.exit(1);
             }
         }
+    }
+
+    private static class ScanPolicy {
+
+        private String scanRule;
+        private Policy policy;
+        public ScanPolicy(String inAttrib, Policy inPolicy) {
+            this.scanRule = inAttrib;
+            this.policy = inPolicy;
+        }
+        
+        public String getRule(){
+            return this.scanRule;
+        }
+        
+        public Policy getPolicy(){
+            return this.policy;
+        }
+        
     }
 
 }
