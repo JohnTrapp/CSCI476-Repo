@@ -12,6 +12,7 @@ import java.util.ArrayList;
  * @author Brendan
  */
 public class Policy {
+    private String name;
     private String type;
     private String proto;
     private String host_port;
@@ -20,31 +21,31 @@ public class Policy {
     private ArrayList<SubPolicy> subPolicies;
     
     public Policy(){
-        subPolicies = new ArrayList();
+        this.subPolicies = new ArrayList();
     }
     
-    public void stateless(){
-        type = "stateless";
+    public void setName(String inName){
+        this.name = inName;
     }
     
-    public void stateful(){
-        type = "stateful";
+    public void state(String inState){
+        this.type = inState;
     }
     
     public void setProto(String inProto){
-        proto = inProto;
+        this.proto = inProto;
     }
     
     public void setHostPort(String inHostPort){
-        host_port = inHostPort;
+        this.host_port = inHostPort;
     }
     
     public void setAttackerPort(String inAttackerPort){
-        attacker_port = inAttackerPort;
+        this.attacker_port = inAttackerPort;
     }
     
     public void setAttacker(String inAttacker){
-        attacker = inAttacker;
+        this.attacker = inAttacker;
     }
     
     public void addSubPolicy(String direction, String regexp){
