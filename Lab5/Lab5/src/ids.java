@@ -117,19 +117,19 @@ public class ids {
                     destinationPort = (packet.getHeader(udp).destination());
                 }
 
-                payload = Arrays.toString(packet.getHeader(payloadHeader).data());
+                payload = new String(packet.getHeader(ip).getPayload());
 
-                for (int i = 0; i < host_port.size(); i++) {
-
-                    if (Integer.parseInt(host_port.get(i).getRule()) == destinationPort) {
-                        ArrayList<SubPolicy> temp = host_port.get(i).getPolicy().getSubPolicies();
-                        for (int j = 0; j < temp.size(); j++) {
-                            if(temp.get(j).matchRule(payload)){
-                                System.out.println("\tRule: " + host_port.get(i).getPolicy().getName());
+                for (ScanPolicy host_port1 : host_port) {
+                    if (Integer.parseInt(host_port1.getRule()) == destinationPort) {
+                        ArrayList<SubPolicy> temp = host_port1.getPolicy().getSubPolicies();
+                        for (SubPolicy temp1 : temp) {
+                            if (temp1.matchRule(payload)) {
+                                System.out.println("\tRule: " + host_port1.getPolicy().getName());
                             }
                         }
                     }
                 }
+                
             }
         };
 
