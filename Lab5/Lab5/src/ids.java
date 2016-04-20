@@ -2,6 +2,9 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+//import org.jnetpcap.Pcap;  
+import org.jnetpcap.packet.PcapPacket;  
+import org.jnetpcap.packet.PcapPacketHandler;  
 
 /*
  * This code is written by John Trapp and Brendan Bellows
@@ -33,25 +36,40 @@ public class ids {
 
         
         createPolicies();
-        scan();
+        scan(args[1]);
     }
 
     private static void createPolicies() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    private static void scan() {
+    private static void scan(String fileIn) {
         final StringBuilder errbuf = new StringBuilder();   //For error messages
-        //final String file = args[1];
+        final String file = fileIn;
+        
+        Pcap pcap = Pcap.openOffline(file, errbuf);
     }
 
     private static void isInputCorrect(String[] args) throws IOException {
-        System.err.println("Input checking is not yet written! Input is assumed to be correct.");
-        if (true) { //if not verified
+        boolean policy = true;
+        boolean pcap = true;
+        
+        if(!args[0].contains(".txt")){
+            policy = false;
+        }
+        if(!args[1].contains(".pcap")){
+            pcap = false;
+        }
+        
+        if (!policy || !pcap) { //if not verified
             BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-            System.err.print("Unable to verify file! Continue? (Y/N)");
+            System.err.print("Unable to verify files! Please check your arguments. "
+                    + "\nVerification Results:"
+                    + "\n\tPolicy file:\t" + policy 
+                    + "\n\tPCAP File:\t" + pcap 
+                    + "\nContinue? (Y/N) ");
             String in = reader.readLine();
-            if (in.equalsIgnoreCase("N")) {
+            if (!in.equalsIgnoreCase("Y")) {
                 System.exit(1);
             }
         }
