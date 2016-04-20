@@ -32,7 +32,8 @@ public class ids {
          }*/
         isInputCorrect(args);
 
-        config.ConfigParser parser = new config.ConfigParser();
+        config.ConfigParser parser = new config.ConfigParser(args[0]);
+        parser.parseThisShit();
         //arraylist policys = parse(args[0]);
 
         createPolicies();

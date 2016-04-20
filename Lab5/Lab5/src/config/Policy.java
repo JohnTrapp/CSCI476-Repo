@@ -52,13 +52,15 @@ public class Policy {
         SubPolicy temp = new SubPolicy();
         temp.setDirection(direction);
         temp.setRegexp(regexp);
+        this.subPolicies.add(temp);
     }
     
-    public void addSubPolicy(String direction, String regexp, ArrayList<String> flags){
+    public void addSubPolicy(String direction, String regexp, String flags){
         SubPolicy temp = new SubPolicy();
         temp.setDirection(direction);
         temp.setRegexp(regexp);
         temp.setFlags(flags);
+        this.subPolicies.add(temp);
     }
     
     public String getType(){

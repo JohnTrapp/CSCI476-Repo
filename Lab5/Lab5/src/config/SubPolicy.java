@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public class SubPolicy {
     private String direction;
     private String regexp;
-    private ArrayList<String> flags;
+    private String flags;
     
     public SubPolicy(){
     }
@@ -24,7 +24,7 @@ public class SubPolicy {
         this.regexp = regexp;
     }
 
-    public void setFlags(ArrayList<String> flags) {
+    public void setFlags(String flags) {
         this.flags = flags;
     }
     
