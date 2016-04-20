@@ -23,9 +23,10 @@ public class SubPolicy {
         this.direction = direction;
     }
 
-    public void setRegexp(String regexp) {
-        this.regexp = regexp;
-        pattern = Pattern.compile(regexp);
+    public void setRegexp(String inRegexp) {
+        inRegexp = inRegexp.substring(1, inRegexp.length()-1);
+        this.regexp = inRegexp;
+        pattern = Pattern.compile(inRegexp);
     }
 
     public void setFlags(String flags) {
@@ -34,7 +35,7 @@ public class SubPolicy {
     
     public boolean matchRule(String inTest){
         Matcher m = this.pattern.matcher(inTest);
-        return m.matches();
+        return m.find();
     }
     
 }
