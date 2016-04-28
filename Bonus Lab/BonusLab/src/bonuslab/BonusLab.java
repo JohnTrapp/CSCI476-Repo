@@ -57,7 +57,7 @@ public class BonusLab {
             }
         } while (temp.length != 16);  //Have user try again
 
-        return temp;  //Return user input!
+        return temp;  //Return user input
     }
 
 }
