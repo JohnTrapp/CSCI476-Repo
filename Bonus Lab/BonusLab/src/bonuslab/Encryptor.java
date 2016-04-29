@@ -43,31 +43,85 @@ public class Encryptor {
         text = plainTextIn;
         
         copyInTest(state, text);
+        for (int p = 0; p < state.length; p++){
+            for (int j = 0; j < state[0].length; j++){
+                System.out.print(" " + Integer.toHexString(state[p][j]).toUpperCase() + " |");
+            }
+            System.out.println();
+        }
+            System.out.println();
         for (int i = 1; i <= ROUNDS; i++) {
             subBytes();
             shiftRows();
             if (i != ROUNDS) {
                 mixColumns();
                 System.out.println("\nAfter " + i + " round(s), the state is");
-                System.out.println(Arrays.toString(text));
+                System.out.println(this.actualToString());
             } else {
                 System.out.println("\nAfter " + i + " rounds (no MixColumn step), the state is");
-                System.out.println(Arrays.toString(text));
+                System.out.println(this.actualToString());
             }
         }
     }
 
     private void subBytes() {
+        byte row, col;
+        byte LSNMask = 0x0F;
+        
+        for(int i = 0; i < state.length; i++){
+            for(int j = 0; j < state[0].length; j++){
+                col = (byte)(((byte)state[i][j]) & LSNMask);
+                row = (byte)((((byte)state[i][j]) >>> 4) & LSNMask);
+                state[i][j] = sBox[row][col];
+            }
+        }
+        for (int p = 0; p < state.length; p++){
+            for (int j = 0; j < state[0].length; j++){
+                System.out.print(" " + Integer.toHexString(state[p][j]).toUpperCase() + " |");
+            }
+            System.out.println();
+        }
+        System.out.println();
     }
 
     private void shiftRows() {
+        int[][] temp = new int[state.length][state[0].length];
+        for(int i = 0; i < state.length; i++){
+            for(int j = 0; j < state[0].length; j++){
+                temp[i][Math.abs((j - i)%3)] = state[i][j];
+            }
+        }
+        state = temp;
+        for (int p = 0; p < state.length; p++){
+            for (int j = 0; j < state[0].length; j++){
+                System.out.print(" " + Integer.toHexString(state[p][j]).toUpperCase() + " |");
+            }
+            System.out.println();
+        }
+        System.out.println();
     }
 
     private void mixColumns() {
+        state = multiplyMatrix(state, tran_matrix);
+        for (int p = 0; p < state.length; p++){
+            for (int j = 0; j < state[0].length; j++){
+                System.out.print(" " + Integer.toHexString(state[p][j]).toUpperCase() + " |");
+            }
+            System.out.println();
+        }
+        System.out.println();
     }
 
     private void createTran_Matrix() {
-        //tran_matrix = new int[]{2, 3, 1, 1, 1, 2, 3, 1, 1, 1, 2, 3, 3, 1, 1, 2 };
+        tran_matrix = new int[4][4];
+        int z=0;
+        int[] temp = new int[]{2, 3, 1, 1, 1, 2, 3, 1, 1, 1, 2, 3, 3, 1, 1, 2 };
+        for(int i = 0; i < 4; i++){
+            for(int j = 0; j <4; j++){
+                tran_matrix[i][j] = temp[z];
+                z++;
+            }
+        }
     }
 
     private void copyIn(byte[][] state, byte[] in) {
@@ -95,6 +149,49 @@ public class Encryptor {
                 out[outLoc++] = state[r][c];
             }
         }
+    }
+    
+    private int[][] multiplyMatrix(int[][] inA, int[][] inB){
+        for (int p = 0; p < inA.length; p++){
+            for (int j = 0; j < inA[0].length; j++){
+                System.out.print(" " + Integer.toHexString(inA[p][j]).toUpperCase() + " |");
+            }
+            System.out.print("\t");
+            for (int j = 0; j < inB[0].length; j++){
+                System.out.print(" " + Integer.toHexString(inB[p][j]).toUpperCase() + " |");
+            }
+            System.out.println();
+        }
+        System.out.println();
+        int[][]c = new int[inA.length][inB[0].length];
+        try{
+            for(int i = 0; i < inA.length; i++){
+                for(int j = 0; j < inB[0].length; j++){
+                    for(int k = 0; k< inB[0].length; k++){
+                        c[i][j] += inA[i][k] * inB[k][j];
+                        c[i][j] = c[i][j] & 0x000000FF;
+                    }
+                }
+            }
+            
+        } catch (ArrayIndexOutOfBoundsException e){
+            System.err.println("You are multiplying invalid matrices, idiot!");
+            
+        }
+        return c;
+    }
+    
+    private String actualToString(){
+        String temp = "";
+        
+        for (int i = 0; i < state.length; i++){
+            for (int j = 0; j < state[0].length; j++){
+                temp += Integer.toHexString(state[i][j]).toUpperCase();
+                temp += " ";
+            }
+        }
+        
+        return temp;
     }
 
 }
