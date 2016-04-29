@@ -5,8 +5,6 @@
  */
 package bonuslab;
 
-import java.util.Arrays;
-
 /**
  *
  * @author John Trapp and Brendan Bellows
@@ -16,7 +14,7 @@ public class Encryptor {
     private int ROUNDS;
     private byte[] text;
     private int[][] state = new int[4][4];
-    private int[][] sBox = {{0x63, 0x7C, 0x77, 0x7B, 0xF2, 0x6B, 0x6F, 0xC5, 0x30, 0x01, 0x67, 0x2B, 0xFE, 0xD7, 0xAB, 0x76},
+    private final int[][] sBox = {{0x63, 0x7C, 0x77, 0x7B, 0xF2, 0x6B, 0x6F, 0xC5, 0x30, 0x01, 0x67, 0x2B, 0xFE, 0xD7, 0xAB, 0x76},
     {0xCA, 0x82, 0xC9, 0x7D, 0xFA, 0x59, 0x47, 0xF0, 0xAD, 0xD4, 0xA2, 0xAF, 0x9C, 0xA4, 0x72, 0xC0},
     {0xB7, 0xFD, 0x93, 0x26, 0x36, 0x3F, 0xF7, 0xCC, 0x34, 0xA5, 0xE5, 0xF1, 0x71, 0xD8, 0x31, 0x15},
     {0x04, 0xC7, 0x23, 0xC3, 0x18, 0x96, 0x05, 0x9A, 0x07, 0x12, 0x80, 0xE2, 0xEB, 0x27, 0xB2, 0x75},
@@ -32,32 +30,34 @@ public class Encryptor {
     {0x70, 0x3E, 0xB5, 0x66, 0x48, 0x03, 0xF6, 0x0E, 0x61, 0x35, 0x57, 0xB9, 0x86, 0xC1, 0x1D, 0x9E},
     {0xE1, 0xF8, 0x98, 0x11, 0x69, 0xD9, 0x8E, 0x94, 0x9B, 0x1E, 0x87, 0xE9, 0xCE, 0x55, 0x28, 0xDF},
     {0x8C, 0xA1, 0x89, 0x0D, 0xBF, 0xE6, 0x42, 0x68, 0x41, 0x99, 0x2D, 0x0F, 0xB0, 0x54, 0xBB, 0x16}};
-    private int[][] tran_matrix;
+    private final int[][] tran_matrix = {{2, 3, 1, 1}, {1, 2, 3, 1}, {1, 1, 2, 3}, {3, 1, 1, 2}};
 
     public Encryptor() {
-        createTran_Matrix();
     }
 
-    public void encrypt(byte[] plainTextIn, int rounds) {
+    public void encrypt(byte[] plainTextIn, int rounds) { //Takes in message and encrypts
         ROUNDS = rounds;
         text = plainTextIn;
 
-        copyInTest(state, text);
-        for (int p = 0; p < state.length; p++) {
-            for (int j = 0; j < state[0].length; j++) {
-                System.out.print(" " + Integer.toHexString(state[p][j]).toUpperCase() + " |");
-            }
-            System.out.println();
-        }
-        System.out.println();
-        for (int i = 1; i <= ROUNDS; i++) {
+        copyInTest(state, text); //Takes the input and puts it in a 4x4 int matrix
+
+        //UNCOMMENT TO DEBUG
+        /*for (int p = 0; p < state.length; p++) {
+         for (int j = 0; j < state[0].length; j++) {
+         System.out.print(" " + Integer.toHexString(state[p][j]).toUpperCase() + " |");
+         }
+         System.out.println();
+         }
+         System.out.println();*/
+        ////////////////////
+        for (int i = 1; i <= ROUNDS; i++) { //Does each step x amount of times
             subBytes();
             shiftRows();
-            if (i != ROUNDS) {
+            if (i != ROUNDS) {  //If it's not the last time
                 mixColumns();
                 System.out.println("\nAfter " + i + " round(s), the state is");
                 System.out.println(this.actualToString());
-            } else {
+            } else {  //If it's the last time
                 System.out.println("\nAfter " + i + " rounds (no MixColumn step), the state is");
                 System.out.println(this.actualToString());
             }
@@ -68,65 +68,57 @@ public class Encryptor {
         byte row, col;
         byte LSNMask = 0x0F;
 
-        for (int i = 0; i < state.length; i++) {
-            for (int j = 0; j < state[0].length; j++) {
-                col = (byte) (((byte) state[i][j]) & LSNMask);
-                System.out.println(col);
-                row = (byte) ((((byte) state[i][j]) >>> 4) & LSNMask);
-                System.out.println(row);
-                state[i][j] = sBox[col][row];
+        for (int[] state1 : state) {  //For each row in state
+            for (int j = 0; j < state[0].length; j++) {  //For each col in state
+                col = (byte) (((byte) state1[j]) & LSNMask);
+                row = (byte) ((((byte) state1[j]) >>> 4) & LSNMask);
+                state1[j] = sBox[col][row];  //Replace the byte with the sBox one
             }
         }
-        for (int p = 0; p < state.length; p++) {
-            for (int j = 0; j < state[0].length; j++) {
-                System.out.print(" " + Integer.toHexString(state[p][j]).toUpperCase() + " |");
-            }
-            System.out.println();
-        }
-        System.out.println();
+        //UNCOMMENT TO DEBUG
+        /*for (int p = 0; p < state.length; p++) {
+         for (int j = 0; j < state[0].length; j++) {
+         System.out.print(" " + Integer.toHexString(state[p][j]).toUpperCase() + " |");
+         }
+         System.out.println();
+         }
+         System.out.println();*/
+        ////////////////////
     }
 
     private void shiftRows() {
         int[][] temp = new int[state.length][state[0].length];
         for (int i = 0; i < state.length; i++) {
             for (int j = 0; j < state[0].length; j++) {
-                temp[i][j] = state[i][Math.abs(j + i) % 4];
+                temp[i][j] = state[i][Math.abs(j + i) % 4]; //Build the new array in a temp location
             }
         }
 
-        state = temp;
-        
-        
-        for (int p = 0; p < state.length; p++) {
-            for (int j = 0; j < state[0].length; j++) {
-                System.out.print(" " + Integer.toHexString(state[p][j]).toUpperCase() + " |");
-            }
-            System.out.println();
-        }
-        System.out.println();
+        state = temp;  //Update the array
+
+        //UNCOMMENT TO DEBUG
+        /*for (int p = 0; p < state.length; p++) {
+         for (int j = 0; j < state[0].length; j++) {
+         System.out.print(" " + Integer.toHexString(state[p][j]).toUpperCase() + " |");
+         }
+         System.out.println();
+         }
+         System.out.println();*/
+        ////////////////////
     }
 
     private void mixColumns() {
         state = multiplyMatrix(state, tran_matrix);
-        for (int p = 0; p < state.length; p++) {
-            for (int j = 0; j < state[0].length; j++) {
-                System.out.print(" " + Integer.toHexString(state[p][j]).toUpperCase() + " |");
-            }
-            System.out.println();
-        }
-        System.out.println();
-    }
 
-    private void createTran_Matrix() {
-        tran_matrix = new int[4][4];
-        int z = 0;
-        int[] temp = new int[]{2, 3, 1, 1, 1, 2, 3, 1, 1, 1, 2, 3, 3, 1, 1, 2};
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 4; j++) {
-                tran_matrix[i][j] = temp[z];
-                z++;
-            }
-        }
+        //UNCOMMENT TO DEBUG
+        /*for (int p = 0; p < state.length; p++) {
+         for (int j = 0; j < state[0].length; j++) {
+         System.out.print(" " + Integer.toHexString(state[p][j]).toUpperCase() + " |");
+         }
+         System.out.println();
+         }
+         System.out.println();*/
+        ////////////////////
     }
 
     private void copyIn(byte[][] state, byte[] in) {
@@ -157,19 +149,22 @@ public class Encryptor {
     }
 
     private int[][] multiplyMatrix(int[][] inA, int[][] inB) {
-        for (int p = 0; p < inA.length; p++) {
-            for (int j = 0; j < inA[0].length; j++) {
-                System.out.print(" " + Integer.toHexString(inA[p][j]).toUpperCase() + " |");
-            }
-            System.out.print("\t");
-            for (int j = 0; j < inB[0].length; j++) {
-                System.out.print(" " + Integer.toHexString(inB[p][j]).toUpperCase() + " |");
-            }
-            System.out.println();
-        }
-        System.out.println();
+        //UNCOMMENT TO DEBUG
+        /*for (int p = 0; p < inA.length; p++) {
+         for (int j = 0; j < inA[0].length; j++) {
+         System.out.print(" " + Integer.toHexString(inA[p][j]).toUpperCase() + " |");
+         }
+         System.out.print("\t");
+         for (int j = 0; j < inB[0].length; j++) {
+         System.out.print(" " + Integer.toHexString(inB[p][j]).toUpperCase() + " |");
+         }
+         System.out.println();
+         }
+         System.out.println();*/
+        ////////////////////
+
         int[][] c = new int[inA.length][inB[0].length];
-        try {
+        try {  //Try to do the math here.
             for (int i = 0; i < inA.length; i++) {
                 for (int j = 0; j < inB[0].length; j++) {
                     for (int k = 0; k < inB[0].length; k++) {
@@ -181,24 +176,26 @@ public class Encryptor {
 
         } catch (ArrayIndexOutOfBoundsException e) {
             System.err.println("You are multiplying invalid matrices, idiot!");
+        }
 
-        }
-        for (int p = 0; p < state.length; p++) {
-            for (int j = 0; j < state[0].length; j++) {
-                System.out.print(" " + Integer.toHexString(c[p][j]).toUpperCase() + " |");
-            }
-            System.out.println();
-        }
-        System.out.println();
+        //UNCOMMENT TO DEBUG
+        /*for (int p = 0; p < state.length; p++) {
+         for (int j = 0; j < state[0].length; j++) {
+         System.out.print(" " + Integer.toHexString(c[p][j]).toUpperCase() + " |");
+         }
+         System.out.println();
+         }
+         System.out.println();*/
+        ////////////////////
         return c;
     }
 
-    private String actualToString() {
+    private String actualToString() {  //Pretty Print
         String temp = "";
 
-        for (int i = 0; i < state.length; i++) {
+        for (int[] state1 : state) {
             for (int j = 0; j < state[0].length; j++) {
-                temp += Integer.toHexString(state[i][j]).toUpperCase();
+                temp += Integer.toHexString(state1[j]).toUpperCase();
                 temp += " ";
             }
         }
